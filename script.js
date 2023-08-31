@@ -12,12 +12,12 @@ let $popupInput;
 let $addPopupBtn;
 let $closeTodoBtn;
 
-const main = () => {
+function main() {
   prepareDOMElements();
   prepareDOMEvents();
-};
+}
 
-const prepareDOMElements = () => {
+function prepareDOMElements() {
   $todoInput = document.querySelector(".todo-input");
   $alertInfo = document.querySelector(".alert-info");
   $addBtn = document.querySelector(".add-btn");
@@ -28,25 +28,46 @@ const prepareDOMElements = () => {
   $popupInput = document.querySelector(".popup-input");
   $addPopupBtn = document.querySelector(".accept");
   $closeTodoBtn = document.querySelector(".cancel");
-};
+}
 
-const prepareDOMEvents = () => {
+function prepareDOMEvents() {
   $addBtn.addEventListener("click", addNewTask);
-};
+}
 
-const addNewTask = () => {
+function addNewTask() {
   const newTask = document.createElement("li");
   newTask.textContent = $todoInput.value;
   newTask.id = ++$idNumber;
   newTask.innerHTML += `<div class="tools">
-  <button class="complete"><i class="fas fa-check"></i></button>
-  <button class="edit">Edit</button>
-  <button class="delete"><i class="fas fa-times"></i></button>
+  <button class="complete" onclick="completeTask(${newTask.id})"><i class="fas fa-check"></i></button><button class="edit" onclick="editTask(${newTask.id})">Edit</button><button class="delete" onclick="deleteTask(${newTask.id})"><i class="fas fa-times"></i></button>
 </div>`;
 
   $ulList.appendChild(newTask);
   $todoInput.value = "";
   $alertInfo.textContent = "";
-};
+}
+function completeTask(taskId) {
+  document.getElementById(`${taskId}`).classList.toggle("completed");
+}
+
+function deleteTask(taskId) {
+  document.getElementById(`${taskId}`).remove();
+}
+
+// function editTask(taskId) {
+//   $popup.style.display = "flex";
+
+//   $addPopupBtn.addEventListener("click", () => {
+//     document.getElementById(`${taskId}`).textContent = $popupInput.value;
+
+//     $popupInput.value = "";
+//     $popup.style.display = "none";
+//   });
+
+//   $closeTodoBtn.addEventListener("click", () => {
+//     $popupInput.value = "";
+//     $popup.style.display = "none";
+//   });
+// }
 
 document.addEventListener("DOMContentLoaded", main);
