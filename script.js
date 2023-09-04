@@ -32,12 +32,14 @@ function prepareDOMElements() {
 
 function prepareDOMEvents() {
   $addBtn.addEventListener("click", addNewTask);
+  $closeTodoBtn.addEventListener("click", closeTodoBtn);
+  $addPopupBtn.addEventListener("click", addPopupBtn);
 }
 
 function addNewTask() {
   const newTask = document.createElement("li");
   newTask.textContent = $todoInput.value;
-  newTask.id = ++$idNumber;
+  newTask.id = $idNumber;
   newTask.innerHTML += `<div class="tools">
   <button class="complete" onclick="completeTask(${newTask.id})"><i class="fas fa-check"></i></button><button class="edit" onclick="editTask(${newTask.id})">Edit</button><button class="delete" onclick="deleteTask(${newTask.id})"><i class="fas fa-times"></i></button>
 </div>`;
@@ -45,29 +47,32 @@ function addNewTask() {
   $ulList.appendChild(newTask);
   $todoInput.value = "";
   $alertInfo.textContent = "";
+  $idNumber++;
 }
 function completeTask(taskId) {
-  document.getElementById(`${taskId}`).classList.toggle("completed");
+  document.getElementById(taskId).classList.toggle("completed");
 }
 
 function deleteTask(taskId) {
-  document.getElementById(`${taskId}`).remove();
+  document.getElementById(taskId).remove();
 }
 
-// function editTask(taskId) {
-//   $popup.style.display = "flex";
+function editTask(taskId) {
+  $popup.style.display = "flex";
+  $editedTodo = taskId;
+  $popupInput.value = "";
+}
 
-//   $addPopupBtn.addEventListener("click", () => {
-//     document.getElementById(`${taskId}`).textContent = $popupInput.value;
+function addPopupBtn() {
+  document.getElementById($editedTodo).firstChild.textContent =
+    $popupInput.value;
 
-//     $popupInput.value = "";
-//     $popup.style.display = "none";
-//   });
+  $popup.style.display = "none";
+}
 
-//   $closeTodoBtn.addEventListener("click", () => {
-//     $popupInput.value = "";
-//     $popup.style.display = "none";
-//   });
-// }
+function closeTodoBtn() {
+  $popup.style.display = "none";
+  $popupInput.value = "";
+}
 
 document.addEventListener("DOMContentLoaded", main);
