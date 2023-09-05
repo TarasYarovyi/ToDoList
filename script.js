@@ -3,14 +3,13 @@ let $alertInfo;
 let $addBtn;
 let $ulList;
 let $newTask;
-let $allTasks;
-let $idNumber = 0;
 let $popup;
 let $popupInfo;
-let $editedTodo;
 let $popupInput;
 let $addPopupBtn;
 let $closeTodoBtn;
+let $editedTodo;
+let $idNumber = 0;
 
 function main() {
   prepareDOMElements();
@@ -34,14 +33,15 @@ function prepareDOMEvents() {
   $addBtn.addEventListener("click", addNewTask);
   $closeTodoBtn.addEventListener("click", closeTodoBtn);
   $addPopupBtn.addEventListener("click", addPopupBtn);
+  $ulList.addEventListener("click", handleToolAction);
 }
 
 function addNewTask() {
   const newTask = document.createElement("li");
-  newTask.textContent = $todoInput.value;
+  newTask.innerHTML = $todoInput.value;
   newTask.id = $idNumber;
   newTask.innerHTML += `<div class="tools">
-  <button class="complete" onclick="completeTask(${newTask.id})"><i class="fas fa-check"></i></button><button class="edit" onclick="editTask(${newTask.id})">Edit</button><button class="delete" onclick="deleteTask(${newTask.id})"><i class="fas fa-times"></i></button>
+  <button class="complete"><i class="fas fa-check"></i></button><button class="edit"><i class="fas fa-pencil"></i></button><button class="delete"><i class="fas fa-times"></i></button>
 </div>`;
 
   $ulList.appendChild(newTask);
@@ -49,18 +49,19 @@ function addNewTask() {
   $alertInfo.textContent = "";
   $idNumber++;
 }
-function completeTask(taskId) {
-  document.getElementById(taskId).classList.toggle("completed");
-}
+function handleToolAction(e) {
+  const handledTask = e.target.closest("li");
+  const handledBtn = e.target.closest("button");
 
-function deleteTask(taskId) {
-  document.getElementById(taskId).remove();
-}
-
-function editTask(taskId) {
-  $popup.style.display = "flex";
-  $editedTodo = taskId;
-  $popupInput.value = "";
+  if (handledBtn.classList.contains("complete")) {
+    handledTask.classList.toggle("completed");
+  } else if (e.target.closest("button").classList.contains("delete")) {
+    handledTask.remove();
+  } else if (e.target.closest("button").classList.contains("edit")) {
+    $popup.style.display = "flex";
+    $editedTodo = handledTask.id;
+    $popupInput.value = handledTask.textContent;
+  }
 }
 
 function addPopupBtn() {
