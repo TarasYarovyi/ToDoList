@@ -11,6 +11,8 @@ let $closeTodoBtn;
 let $editedTodo;
 let $idNumber = 0;
 
+document.addEventListener("DOMContentLoaded", main);
+
 function main() {
   prepareDOMElements();
   prepareDOMEvents();
@@ -31,32 +33,45 @@ function prepareDOMElements() {
 
 function prepareDOMEvents() {
   $addBtn.addEventListener("click", addNewTask);
-  $closeTodoBtn.addEventListener("click", closeTodoBtn);
+  $todoInput.addEventListener("keypress", enterTodoInput);
   $addPopupBtn.addEventListener("click", addPopupBtn);
+  $closeTodoBtn.addEventListener("click", closeTodoBtn);
   $ulList.addEventListener("click", handleToolAction);
 }
 
 function addNewTask() {
-  const newTask = document.createElement("li");
-  newTask.innerHTML = $todoInput.value;
-  newTask.id = $idNumber;
-  newTask.innerHTML += `<div class="tools">
-  <button class="complete"><i class="fas fa-check"></i></button><button class="edit"><i class="fas fa-pencil"></i></button><button class="delete"><i class="fas fa-times"></i></button>
-</div>`;
-
-  $ulList.appendChild(newTask);
-  $todoInput.value = "";
-  $alertInfo.textContent = "";
-  $idNumber++;
+  if ($todoInput.value) {
+    const newTask = document.createElement("li");
+    newTask.innerHTML = $todoInput.value;
+    newTask.id = $idNumber;
+    newTask.innerHTML += `<div class="tools"><button class="complete"><i class="fas fa-check"></i></button><button class="edit"><i class="fas fa-pencil"></i></button><button class="delete"><i class="fas fa-times"></i></button></div>`;
+    $ulList.appendChild(newTask);
+    $todoInput.value = "";
+    $alertInfo.textContent = "";
+    $idNumber++;
+  } else {
+    $alertInfo.textContent = "Please, enter some content.";
+  }
 }
+
+function enterTodoInput(e) {
+  if (e.key === "Enter") {
+    addNewTask();
+  }
+}
+
 function handleToolAction(e) {
   const handledTask = e.target.closest("li");
   const handledBtn = e.target.closest("button");
 
   if (handledBtn.classList.contains("complete")) {
     handledTask.classList.toggle("completed");
+    handledBtn.classList.toggle("completed");
   } else if (e.target.closest("button").classList.contains("delete")) {
     handledTask.remove();
+    if (!$allTasks[0]) {
+      $alertInfo.textContent = "No tasks on the list.";
+    }
   } else if (e.target.closest("button").classList.contains("edit")) {
     $popup.style.display = "flex";
     $editedTodo = handledTask.id;
@@ -65,15 +80,19 @@ function handleToolAction(e) {
 }
 
 function addPopupBtn() {
-  document.getElementById($editedTodo).firstChild.textContent =
-    $popupInput.value;
+  if ($popupInput.value) {
+    document.getElementById($editedTodo).firstChild.textContent =
+      $popupInput.value;
 
-  $popup.style.display = "none";
+    $popup.style.display = "none";
+    $popupInfo.textContent = "";
+  } else {
+    $popupInfo.textContent = "Please, enter some content.";
+  }
 }
 
 function closeTodoBtn() {
   $popup.style.display = "none";
   $popupInput.value = "";
+  $popupInfo.textContent = "";
 }
-
-document.addEventListener("DOMContentLoaded", main);
